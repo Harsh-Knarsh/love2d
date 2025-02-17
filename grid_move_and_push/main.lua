@@ -7,6 +7,26 @@ grid = {cells = {}, obstacles = {{x = 2, y = 8}}, player = {x = 1, y = 1},
     pad = 1
     }
   }
+  
+timers = {}
+
+function love.update(dt)
+  player_input()
+  
+  for i = #timers, 1, -1 do
+    local timer = timers[i]
+  
+  if not timers.finished then
+    timer.timeLeft = timer.timeLeft - dt
+    if timer.timeLeft <= 0 then
+      timer.timeLeft = 0
+      timer.finished = true
+      timer.callback()
+      table.remove(timers, i)
+    end
+  end
+  end
+end
 
 function love.draw()
   for i in pairs(grid.cells) do
@@ -40,8 +60,26 @@ function grid_generate()
   end
 end
 
-grid_generate()
+timerActive = false
 
-for i in pairs(grid.cells) do
-  --print(grid.cells[i].x / (grid.dims.cellW + grid.dims.pad))
+function player_input()
+  if love.keyboard.isDown("d") and not timerActive then
+    
+    local newTimer = {timeLeft = 2, finished = false, callback = function() 
+        grid.player.x = grid.player.x + 1 
+        timerActive = false
+        end
+        }
+    
+    table.insert(timers, newTimer)
+    timerActive = true
+    
+  end
 end
+
+
+function timer_create(_duration, _active, _finished)
+  table.insert(timers, {duration = _duration, active = _active, finished = _finished})
+end
+
+grid_generate()
