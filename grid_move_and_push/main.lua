@@ -1,4 +1,4 @@
-grid = {cells = {}, obstacles = {{x = 2, y = 8}}, player = {x = 1, y = 1},
+grid = {cells = {}, obstacles = {{x = 2, y = 8}}, player = {pos = {x = 1, y = 1}, set = {speed = .1}},
   dims = {
     cellW = 10,
     cellH = 10,
@@ -7,7 +7,7 @@ grid = {cells = {}, obstacles = {{x = 2, y = 8}}, player = {x = 1, y = 1},
     pad = 1
     }
   }
-  
+
 timers = {}
 
 function love.update(dt)
@@ -32,7 +32,7 @@ function love.draw()
   for i in pairs(grid.cells) do
     love.graphics.setColor(1,1,1)
     
-    if grid.player.x == grid.cells[i].x / (grid.dims.cellW + grid.dims.pad) and grid.player.y == grid.cells[i].y / (grid.dims.cellH + grid.dims.pad) then
+    if grid.player.pos.x == grid.cells[i].x / (grid.dims.cellW + grid.dims.pad) and grid.player.pos.y == grid.cells[i].y / (grid.dims.cellH + grid.dims.pad) then
       love.graphics.setColor(0,0,1)
     end
     
@@ -63,23 +63,36 @@ end
 timerActive = false
 
 function player_input()
-  if love.keyboard.isDown("d") and not timerActive then
-    
-    local newTimer = {timeLeft = 2, finished = false, callback = function() 
-        grid.player.x = grid.player.x + 1 
+  local direction
+  if love.keyboard.isDown("w") and not timerActive then
+    timer_create(grid.player.set.speed, function() 
+        grid.player.pos.y = grid.player.pos.y - 1
         timerActive = false
-        end
-        }
-    
-    table.insert(timers, newTimer)
-    timerActive = true
-    
+      end)
+  elseif love.keyboard.isDown("a") and not timerActive then
+    timer_create(grid.player.set.speed, function() 
+        grid.player.pos.x = grid.player.pos.x - 1
+        timerActive = false
+      end)
+  elseif love.keyboard.isDown("s") and not timerActive then
+    timer_create(grid.player.set.speed, function() 
+        grid.player.pos.y = grid.player.pos.y + 1
+        timerActive = false
+      end)
+  elseif love.keyboard.isDown("d") and not timerActive then
+    timer_create(grid.player.set.speed, function() 
+        grid.player.pos.x = grid.player.pos.x + 1
+        timerActive = false
+      end)
   end
 end
 
 
-function timer_create(_duration, _active, _finished)
-  table.insert(timers, {duration = _duration, active = _active, finished = _finished})
+function timer_create(_timeLeft, _callback)
+  local newTimer = {timeLeft = _timeLeft, finished = false, callback = _callback
+        }
+    table.insert(timers, newTimer)
+    timerActive = true
 end
 
 grid_generate()
