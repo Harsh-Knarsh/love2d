@@ -2,12 +2,12 @@ grid = {cells = {}, obstacles = {{x = 2, y = 8}}, player = {pos = {x = 1, y = 1}
   dims = {
     cellW = 10,
     cellH = 10,
-    gridW = 25,
-    gridH = 25,
+    gridW = 20,
+    gridH = 60,
     pad = 1
     }
   }
-
+gug = nil
 timers = {}
 
 function love.update(dt)
@@ -29,10 +29,13 @@ function love.update(dt)
 end
 
 function love.draw()
+  
+  
   for i in pairs(grid.cells) do
     love.graphics.setColor(1,1,1)
     
     if grid.player.pos.x == grid.cells[i].x / (grid.dims.cellW + grid.dims.pad) and grid.player.pos.y == grid.cells[i].y / (grid.dims.cellH + grid.dims.pad) then
+      gug = i
       love.graphics.setColor(0,0,1)
     end
     
@@ -43,7 +46,12 @@ function love.draw()
     end
     
     love.graphics.rectangle("fill", grid.cells[i].x, grid.cells[i].y, grid.dims.cellW, grid.dims.cellH)
+    love.graphics.setColor(1,0,0)
+    
   end
+      love.graphics.line(grid.cells[gug].x,grid.cells[gug].y,100,100)
+      love.graphics.print(gug, 250, 100)
+
 end
 
 function grid_generate()
