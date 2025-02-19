@@ -29,8 +29,6 @@ function love.update(dt)
 end
 
 function love.draw()
-  
-  
   for i in pairs(grid.cells) do
     love.graphics.setColor(1,1,1)
     
@@ -49,7 +47,7 @@ function love.draw()
     love.graphics.setColor(1,0,0)
     
   end
-      love.graphics.line(grid.cells[gug].x,grid.cells[gug].y,100,100)
+      love.graphics.line(grid.cells[gug].x,grid.cells[gug].y,grid.cells[gug].x + 5,20)
       love.graphics.print(gug, 250, 100)
 
 end
